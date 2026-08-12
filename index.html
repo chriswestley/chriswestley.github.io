@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chris Westley Porcelli — Portfolio</title>
+<meta name="description" content="Portfolio of Chris Westley Porcelli — garment design and construction, research and development, graphic design, creative direction and photography.">
+
+<!-- browser tab + iPhone home screen icon -->
+<link rel="icon" type="image/png" sizes="32x32" href="ASSETS/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="ASSETS/favicon-192.png">
+<link rel="apple-touch-icon" href="ASSETS/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Porcelli">
+<meta name="theme-color" content="#0a0a0a">
+
+<!-- start fetching the cover straight away so the first screen isn't blank -->
+<link rel="preload" as="image" href="ASSETS/front-cover-900.jpg"
+      imagesrcset="ASSETS/front-cover-900.jpg 900w, ASSETS/front-cover.jpg 1414w"
+      imagesizes="(max-width: 640px) 92vw, min(900px, 94vw)" fetchpriority="high">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --tile: #e8e6e1;
+    --text: #f2f0eb;
+    --dim: #9a978f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;   /* stop iOS inflating text in landscape */
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "American Typewriter", "Courier New", Courier, monospace;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;               /* the full-width name can round up a pixel */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ============ LANDING / COVER ============ */
+  .cover {
+    min-height: 100vh;
+    min-height: 100svh;   /* ignores the phone's collapsing address bar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px 64px;
+    position: relative;
+  }
+  .cover img {
+    max-width: min(900px, 94vw);
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    display: block;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  .scroll-hint:hover { color: var(--text); }
+  @keyframes bob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 6px); }
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 80px 40px 30px;
+    text-align: center;
+  }
+  /* the name spans the full width of the page — sized by fitName() below */
+  header h1 {
+    font-weight: 400;
+    font-size: 90px;          /* placeholder; JS scales it to fit exactly */
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  header .tagline {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--dim);
+  }
+  header .work {
+    margin-top: 30px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  header .work span { display: block; color: var(--dim); margin-bottom: 4px; }
+
+  /* ============ GRID ============ */
+  .grid {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 80px 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 34px;
+  }
+  .tile {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .tile .frame {
+    background: var(--tile);
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    position: relative;
+  }
+  .tile img, .tile video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .45s ease;
+    transform: scale(var(--zoom, 1));
+  }
+  /* project name washes over the frame on hover */
+  .tile .label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    text-align: center;
+    background: rgba(8, 8, 8, .48);
+    color: var(--text);
+    font-size: 14px;
+    letter-spacing: 3px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity .32s ease;
+    pointer-events: none;
+  }
+  .tile:focus-visible .label { opacity: 1; }
+
+  /* mouse: reveal on hover */
+  @media (hover: hover) {
+    .tile:hover img, .tile:hover video { transform: scale(calc(var(--zoom, 1) * 1.035)); }
+    .tile:hover .label { opacity: 1; }
+  }
+
+  /* touch: there is no hover, so the name sits under each picture instead */
+  @media (hover: none) {
+    .tile .label {
+      opacity: 1;
+      align-items: flex-end;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 10px 11px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      background: linear-gradient(to top,
+                  rgba(8,8,8,.78) 0%, rgba(8,8,8,.35) 42%, rgba(8,8,8,0) 72%);
+    }
+  }
+
+  footer {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 40px 70px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--dim);
+    text-align: center;
+  }
+  footer a { color: inherit; }
+  footer a:hover { color: var(--text); }
+
+  /* ============ LIGHTBOX ============ */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: #070707;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+  }
+  .lightbox.open { display: flex; }
+
+  .lb-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    flex: 0 0 auto;
+  }
+  .lb-counter { font-size: 12px; color: var(--dim); letter-spacing: 2px; }
+  .lb-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--text);
+    font-size: 26px;
+    line-height: 1;
+    font-family: inherit;
+    padding: 6px 10px;
+  }
+  .lb-close:hover { color: #fff; }
+
+  .lb-stage {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 0;
+    padding: 0 70px;
+  }
+  /* width/height auto + max-* means media is only ever scaled DOWN to fit,
+     never stretched past its real pixels */
+  .lb-stage img, .lb-stage video {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    user-select: none;
+    transition: opacity .18s ease;
+  }
+  .lb-stage.loading img, .lb-stage.loading video { opacity: .25; }
+
+  .lb-spinner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 26px; height: 26px;
+    border: 2px solid rgba(242,240,235,.25);
+    border-top-color: var(--text);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
+  .lb-stage.loading .lb-spinner { opacity: 1; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  .lb-arrow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 70px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--dim);
+    font-size: 30px;
+    font-family: inherit;
+    transition: color .2s;
+    z-index: 2;
+  }
+  .lb-arrow:hover { color: #fff; }
+  .lb-prev { left: 0; }
+  .lb-next { right: 0; }
+
+  .lb-caption {
+    flex: 0 0 auto;
+    padding: 18px 24px 26px;
+    max-width: 760px;
+  }
+  .lb-caption h2 {
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .lb-caption p {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--dim);
+    white-space: pre-line;   /* keeps the paragraph breaks in longer write-ups */
+  }
+
+  /* ---------- tablet ---------- */
+  @media (max-width: 900px) {
+    header { padding: 60px 28px 20px; }
+    .grid  {
+      padding: 60px 28px 44px;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));  /* 3 across on an iPad */
+    }
+    footer { padding: 30px 28px 60px; }
+  }
+
+  /* ---------- phone ---------- */
+  @media (max-width: 640px) {
+    .cover { padding: 18px 16px 54px; }
+    .cover img { max-width: 92vw; max-height: 82vh; }
+    .scroll-hint { bottom: 20px; font-size: 10px; }
+
+    header { padding: 44px 18px 6px; }
+    header .tagline { margin-top: 12px; font-size: 12px; }
+    header .work { margin-top: 20px; font-size: 12px; line-height: 1.7; }
+
+    /* two across reads better than one giant tile per screen… */
+    .grid {
+      padding: 38px 18px 28px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    /* …except the clips, which get a full-width row of their own */
+    .tile--video { grid-column: 1 / -1; }
+    .tile--video .label { font-size: 12px; padding: 13px 14px; }
+
+    footer { padding: 22px 18px 40px; font-size: 11px; }
+
+    /* lightbox: give the picture the full width, float the controls on top */
+    .lightbox { height: 100dvh; }
+    .lb-top { padding: 10px 12px; }
+    .lb-counter { font-size: 11px; }
+    .lb-close { font-size: 30px; padding: 8px 12px; }   /* comfortable tap target */
+
+    .lb-stage { padding: 0 4px; }
+    .lb-arrow {
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(8, 8, 8, .55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      color: var(--text);
+    }
+    .lb-prev { left: 8px; }
+    .lb-next { right: 8px; }
+
+    .lb-caption { padding: 12px 16px 20px; }
+    .lb-caption h2 { font-size: 13px; letter-spacing: 1.5px; }
+    .lb-caption p {
+      font-size: 12px;
+      margin-top: 6px;
+      max-height: 22vh;      /* a long description can't crowd out the photo */
+      overflow-y: auto;
+    }
+  }
+
+  /* phone held sideways — very little height to work with */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .cover { min-height: auto; padding: 24px 16px 44px; }
+    .cover img { max-height: 78vh; }
+    .lb-caption { padding: 8px 16px 12px; }
+    .lb-caption p { max-height: 16vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LANDING ============ -->
+<section class="cover">
+  <img src="ASSETS/front-cover.jpg"
+       srcset="ASSETS/front-cover-900.jpg 900w, ASSETS/front-cover.jpg 1414w"
+       sizes="(max-width: 640px) 92vw, min(900px, 94vw)"
+       fetchpriority="high"
+       alt="Chris Westley Porcelli — Portfolio">
+  <a class="scroll-hint" href="#work">Scroll</a>
+</section>
+
+<header id="work">
+  <h1 id="name">Chris Westley Porcelli</h1>
+  <p class="tagline">Garment Design, Creative Direction</p>
+  <div class="work">
+    <span>Work includes:</span>
+    - Garment Design &amp; Construction<br>
+    - Research &amp; development<br>
+    - Graphic Design<br>
+    - Creative Direction<br>
+    - Photography
+  </div>
+</header>
+
+<main class="grid" id="grid"></main>
+
+<footer>
+  Contact: <a href="mailto:chriswestleyj@gmail.com">chriswestleyj@gmail.com</a><br>
+  Instagram: <a href="https://instagram.com/chris_westley" target="_blank" rel="noopener">chris_westley</a>
+</footer>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lb-top">
+    <div class="lb-counter" id="lbCounter"></div>
+    <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="lb-stage" id="lbStage">
+    <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous">&larr;</button>
+    <img id="lbImg" src="" alt="">
+    <video id="lbVideo" controls playsinline style="display:none"></video>
+    <div class="lb-spinner"></div>
+    <button class="lb-arrow lb-next" id="lbNext" aria-label="Next">&rarr;</button>
+  </div>
+  <div class="lb-caption">
+    <h2 id="lbTitle"></h2>
+    <p id="lbDesc"></p>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   YOUR PROJECTS. One entry = one folder inside PICTURES.
+
+     title       — shown in the lightbox
+     description — shown in the lightbox under the title
+     folder      — folder name inside PICTURES (exact spelling)
+     cover       — the grid tile image. Use coverVideo instead for a
+                   tile that plays a clip, and coverZoom to zoom past
+                   black bars baked into a clip.
+     images      — what visitors flip through, in order. A plain
+                   filename is looked up inside the folder; a name
+                   with a "/" in it is a path from the site root.
+
+   Photos are served from the WEB folder (smaller copies that load
+   instantly). Re-run optimize.sh after adding new pictures.
+   ================================================================ */
+const PROJECTS = [
+  {
+    title: "Storm Pants",
+    description: "Wide-leg pants in two colorways — custom brushstroke camo and black ripstop — with an embroidered House Painting Service logo on the back pocket. Designed by me. Made for House Painting Service.",
+    folder: "STORM PANTS",
+    coverVideo: "PICTURES/STORM PANTS/Storm Pants in Black.100% Cotton ripstop, worn by @alma.ipsen .Built for everyday movement..mp4",
+    coverPoster: "THUMBS/poster-storm-pants.jpg",
+    images: [
+      "Storm Pants in Black.100% Cotton ripstop, worn by @alma.ipsen .Built for everyday movement..mp4",
+      "730420873_18106632014037005_7123641061512735522_n.jpg",
+      "Black Cargos.jpg",
+      "STORM PANTS (1).jpg",
+      "HPS_Black_Pants_1.jpg",
+      "STORM PANTS.jpg",
+      "STORM PANTS (2).jpg",
+      "BOTH CARGOS.jpg",
+      "762388754_18108361646037005_5938929737743200664_n.jpg",
+      "STORM PANTS (3).jpg",
+      "Storm Shorts (Camouflage)Fip wears size 3, styled for a capri-length look. Choose your usual siz (1).jpg"
+    ]
+  },
+  {
+    title: "Waffle Tank",
+    description: "Waffle tank top in 100% cotton, with an embroidered House Painting Service logo and ribbed trims. Designed by me. Made for House Painting Service.",
+    folder: "WAFFLE TANK",
+    cover: "THUMBS/hps-tank.jpg",
+    images: [
+      "HL Waffle Tank Top. 100% cotton waffle fabric in Egret. Embroidered target logo and ribbed trims.jpg",
+      "HL Waffle Tank Top. 100% cotton waffle fabric in Egret. Embroidered target logo and ribbed trims (1).jpg",
+      "Storm Shorts (Camouflage)Fip wears size 3, styled for a capri-length look. Choose your usual siz.jpg"
+    ]
+  },
+  {
+    title: "Pearl",
+    description: "Long sleeve T-shirt featuring the House Painting Service logo rendered entirely in pearl studwork across the chest, on a heavyweight black cotton body. Designed by me. Made for House Painting Service.",
+    folder: "PEARL",
+    cover: "THUMBS/pearl.jpg",
+    images: [
+      "PEARL.jpg",
+      "PEARL CLOSEUP.jpg",
+      "PEARL L-S.jpg"
+    ]
+  },
+  {
+    title: "Leather Bag - Giaco Mino",
+    description: "Made from 100% sheep leather.\n\nThis bag was designed with function in mind — to carry the everyday tools of a creative. The size is large, with a spacious main compartment that allows room for garments, notebooks, and equipment.\n\nThe leather is soft with a natural grain, giving the bag flexibility while still holding its structure. Construction is kept simple and durable, focusing on usability and capacity.\n\n1 of 1.",
+    folder: "LEATHER BAG FOR GIACO MINO",
+    coverVideo: "ASSETS/leather-bag-loop.mp4",
+    coverPoster: "THUMBS/poster-leather-bag.jpg",
+    images: [
+      "21C13C36-7592-438E-A8DF-1B4AAAD89798.JPG",
+      "8C2E4A82-CF9D-4D15-B0DD-02EE0EE8E2F7.JPG",
+      "B65E3B8C-20EC-435F-9F1D-AF9614E6F369.JPG",
+      "Bag1.jpeg",
+      "IMG_0015.jpeg",
+      "ASSETS/leather-bag.mp4",
+      "IMG_0083.jpeg",
+      "IMG_4524.jpeg",
+      "IMG_4525.jpeg"
+    ]
+  },
+  {
+    title: "Jester",
+    description: "The Jester long sleeve — a deadstock striped cotton jersey body with the House Painting Service knight printed across the chest. Designed by me. Made for House Painting Service.",
+    folder: "JESTER",
+    cover: "THUMBS/jester.jpg",
+    images: [
+      "JESTER DROP.jpg",
+      "JESTER DROPWe’ve just introduced two new variations of our Jester Long Sleeve- Jester Long Sleev.jpg",
+      "JESTER DROPWe’ve just introduced two new variations of our Jester Long Sleeve- Jester Long Sleev (2).jpg"
+    ]
+  },
+  {
+    title: "I Love HPS",
+    description: "The I ❤ HPS tee, released in pink and navy — heart-and-logotype puff screen printed graphic on a fitted cotton body. Designed by me. Made for House Painting Service.",
+    folder: "I LOVE HPS",
+    cover: "THUMBS/i-love-hps.jpg",
+    images: [
+      "I_Love_HPS.jpg",
+      "I_Love_HPS1.jpg",
+      "New I ❤️ HPS shirts!- Love T-shirt - Pink - Love T-shirt - NavyAvailable online and at our fla.jpg",
+      "New I ❤️ HPS shirts!- Love T-shirt - Pink - Love T-shirt - NavyAvailable online and at our fla (1).jpg",
+      "New I ❤️ HPS shirts!- Love T-shirt - Pink - Love T-shirt - NavyAvailable online and at our fla (2).jpg",
+      "Front door activities..jpg"
+    ]
+  },
+  {
+    title: "Sandra Hussein Photoshoot",
+    description: "Campaign shot with Sandra at Rådhuspladsen, Copenhagen — worn-in leather outerwear and storm pants trousers styled around my oversized leather bag. Styled & designed by me. Made for House Painting Service.",
+    folder: "SANDRA HUSSEIN PHOTOSHOOT",
+    coverVideo: "PICTURES/SANDRA HUSSEIN PHOTOSHOOT/Sandra Video.mp4",
+    coverPoster: "THUMBS/poster-sandra.jpg",
+    coverZoom: 1.67,
+    images: [
+      "Sandra Video.mp4",
+      "Sandra, Rådhuspladsen.jpg",
+      "Sandra, Rådhuspladsen (1).jpg"
+    ]
+  },
+  {
+    title: "Cossa New York",
+    description: "Hand sourced vintage football jerseys for Cossa’s series of reworked vintage football jerseys. Archive kits rebuilt with corset lacing, ruching, lace panelling, pearls and studwork — turning team uniform into a feminine, unexpected, style-forward details. Shown as a full sixteen-piece release.",
+    folder: "COSSA NEW YORK",
+    cover: "THUMBS/cossa.jpg",
+    images: [
+      "Frame 93.png",
+      "IMG_2316.JPG",
+      "Cossa (1 of 3).png",
+      "IMG_5002.jpeg",
+      "Cossa.JPG",
+      "IMG_5005.jpeg",
+      "Cossa (3 of 3).png",
+      "IMG_1345.jpeg",
+      "Cossa (2 of 3).png",
+      "IMG_5009.jpeg",
+      "IMG_1541.JPG",
+      "IMG_5003.jpeg"
+    ]
+  },
+  {
+    title: "Military Bag - Giaco Mino",
+    description: "Made from a repurposed Danish military duffle bag.\n\nThis bag was designed with function in mind — to carry the everyday tools of a creative. The size is large, with a spacious main compartment that allows room for garments, notebooks, and equipment, plus one outer side pocket for quick access to smaller items.\n\nThe canvas is dense and hard-wearing, softened by decades of use, giving the bag character while still holding its structure. Original details from the duffle bag are preserved where possible. Construction is kept simple and durable, focusing on usability and capacity.\n\n1 of 1.",
+    folder: "MILITARY BAG FOR GIACO MINO",
+    coverVideo: "ASSETS/military-bag-loop.mp4",
+    coverPoster: "THUMBS/poster-military-bag.jpg",
+    images: [
+      "ASSETS/military-bag.mp4",
+      "ASSETS/military-bag-making.mp4"
+    ]
+  },
+  {
+    title: "Zanjani",
+    description: "Cover artwork and shoot for Aslan Zanjani's single “Medicin” — black-and-white portraits cut into a three-frame sleeve.",
+    folder: "ZANJANI SHOOT",
+    cover: "THUMBS/zanjani.jpg",
+    images: [
+      "1.png",
+      "3.png",
+      "4.png",
+      "Zanjani_Medicin_Coverart.png"
+    ]
+  },
+  {
+    title: "1 of 1 Shorts for Maurice Bizi",
+    description: "A one-off pair of long-line shorts made for Maurice Bizi, cut from a washed grey & navy brushstroke camo with the House Painting Service crosshair motifs screen printed across the leg. Designed by me. Made for MAURICE BIZI.",
+    folder: "1 of 1 SHORTS FOR MAURICE BIZI ",
+    cover: "THUMBS/maurice-bizi.jpg",
+    images: [
+      "friends passing by #7.jpg",
+      "friends passing by #7 (1).png"
+    ]
+  },
+  {
+    title: "1 of 1 Chore Jacket For House Painting Service",
+    description: "A chore jacket made for a house painting service — built to be worn while working. The cut is long and loose, with a hood, a waist belt, and room to move and layer underneath.\n\nThe camo panels on the sleeves and hem are leftover fabric from a sample, used here so nothing goes to waste — giving the jacket its own character. Construction is kept simple and durable, focusing on usability and wear.",
+    folder: "1 of 1 Chore Jacket For House Painting Service",
+    cover: "THUMBS/chore-jacket.jpg",
+    images: [
+      "1of1 Jacket.jpg"
+    ]
+  }
+];
+
+/* ---------- stretch the name to the full page width ---------- */
+function fitName() {
+  const el = document.getElementById("name");
+  const header = el.parentElement;
+  const cs = getComputedStyle(header);
+  const avail = header.clientWidth
+              - parseFloat(cs.paddingLeft)
+              - parseFloat(cs.paddingRight);
+  const BASE = 100;
+  el.style.fontSize = BASE + "px";
+  const natural = el.scrollWidth;
+  if (natural > 0) el.style.fontSize = (BASE * avail / natural) + "px";
+}
+fitName();
+window.addEventListener("resize", fitName);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
+
+const isVideo = f => /\.(mp4|mov|webm)$/i.test(f);
+
+/* Escapes a file path for use in a URL, one folder at a time. This has to
+   be per-segment: filenames here contain "#" and "?" characters, which a
+   plain encodeURI() leaves alone and the browser then reads as the start
+   of an anchor or query — so the picture never loads. */
+const encPath = s => s.split("/").map(encodeURIComponent).join("/");
+
+/* Photos come from the lightweight WEB copies; videos and any
+   root-relative path are used as-is. */
+function mediaSrc(p, f) {
+  if (f.indexOf("/") !== -1) return encPath(f);
+  if (isVideo(f)) return encPath("PICTURES/" + p.folder + "/" + f);
+  return encPath("WEB/" + p.folder + "/" + f.replace(/\.[^.]+$/, ".jpg"));
+}
+
+/* ---------- build grid ---------- */
+const grid = document.getElementById("grid");
+PROJECTS.forEach((p, pi) => {
+  const btn = document.createElement("button");
+  btn.className = "tile" + (p.coverVideo ? " tile--video" : "");
+  btn.setAttribute("aria-label", p.title);
+  const media = p.coverVideo
+    ? '<video src="' + encPath(p.coverVideo) + '"' +
+      (p.coverPoster ? ' poster="' + encPath(p.coverPoster) + '"' : '') +
+      ' autoplay muted loop playsinline preload="metadata"></video>'
+    : '<img loading="lazy" src="' + encPath(p.cover) + '" alt="' + p.title + '">';
+  btn.innerHTML = '<div class="frame">' + media +
+                  '<span class="label">' + p.title + '</span></div>';
+  if (p.coverZoom) btn.style.setProperty("--zoom", p.coverZoom);
+  btn.addEventListener("click", () => openLightbox(pi, 0));
+  grid.appendChild(btn);
+});
+
+/* Browsers stop offscreen clips (and sometimes never start them).
+   Play a tile's clip while it's on screen, pause it when it isn't. */
+const tileVideos = document.querySelectorAll(".tile video");
+if (tileVideos.length) {
+  const play = v => { const r = v.play(); if (r && r.catch) r.catch(() => {}); };
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? play(e.target) : e.target.pause());
+    }, { rootMargin: "200px" });
+    tileVideos.forEach(v => io.observe(v));
+  } else {
+    tileVideos.forEach(play);
+  }
+  // some browsers pause muted loops when the tab is backgrounded
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && !lb.classList.contains("open")) tileVideos.forEach(play);
+  });
+}
+
+/* ---------- lightbox ---------- */
+const lb        = document.getElementById("lightbox");
+const lbStage   = document.getElementById("lbStage");
+const lbImg     = document.getElementById("lbImg");
+const lbVideo   = document.getElementById("lbVideo");
+const lbCounter = document.getElementById("lbCounter");
+const lbTitle   = document.getElementById("lbTitle");
+const lbDesc    = document.getElementById("lbDesc");
+
+let cur = { p: 0, i: 0 };
+let token = 0;            // guards against a slow load overwriting a newer one
+const cache = new Map();  // src -> decoded Image, so revisits are instant
+
+function preload(src) {
+  if (cache.has(src)) return cache.get(src);
+  const done = new Promise(resolve => {
+    const img = new Image();
+    let settled = false;
+    const finish = () => { if (!settled) { settled = true; resolve(img); } };
+    img.onload = () => {
+      // decoding ahead of time avoids a flash, but it can stall (e.g. while
+      // the tab is in the background) — so it must never block the swap
+      if (img.decode) { img.decode().then(finish, finish); setTimeout(finish, 250); }
+      else finish();
+    };
+    img.onerror = finish;
+    setTimeout(finish, 10000);   // last-resort guard: never spin forever
+    img.src = src;
+  });
+  cache.set(src, done);
+  return done;
+}
+
+function openLightbox(pi, ii) {
+  cur = { p: pi, i: ii };
+  lb.classList.add("open");
+  document.body.style.overflow = "hidden";
+  render();
+}
+
+function closeLightbox() {
+  token++;                       // cancel anything still loading
+  lb.classList.remove("open");
+  lbStage.classList.remove("loading");
+  lbVideo.pause();
+  lbVideo.removeAttribute("src");
+  lbVideo.load();
+  document.body.style.overflow = "";
+}
+
+function render() {
+  const p    = PROJECTS[cur.p];
+  const file = p.images[cur.i];
+  const src  = mediaSrc(p, file);
+  const mine = ++token;
+
+  lbCounter.textContent = (cur.i + 1) + " / " + p.images.length;
+  lbTitle.textContent   = p.title;
+  lbDesc.textContent    = p.description;
+
+  if (isVideo(file)) {
+    lbStage.classList.remove("loading");
+    lbImg.style.display   = "none";
+    lbImg.removeAttribute("src");
+    lbVideo.style.display = "block";
+    lbVideo.src = src;
+  } else {
+    lbVideo.pause();
+    lbVideo.style.display = "none";
+    lbVideo.removeAttribute("src");
+    lbStage.classList.add("loading");
+
+    preload(src).then(() => {
+      if (mine !== token) return;              // a newer image won the race
+      lbImg.src = src;
+      lbImg.alt = p.title + " — image " + (cur.i + 1);
+      lbImg.style.display = "block";
+      lbStage.classList.remove("loading");
+    });
+  }
+
+  // warm the neighbours so arrowing through is instant
+  [cur.i + 1, cur.i - 1].forEach(n => {
+    const f = p.images[(n + p.images.length) % p.images.length];
+    if (f && !isVideo(f)) preload(mediaSrc(p, f));
+  });
+}
+
+function step(d) {
+  const n = PROJECTS[cur.p].images.length;
+  cur.i = (cur.i + d + n) % n;
+  render();
+}
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", e => { e.stopPropagation(); step(-1); });
+document.getElementById("lbNext").addEventListener("click", e => { e.stopPropagation(); step(1); });
+lbStage.addEventListener("click", e => { if (e.target === lbStage) closeLightbox(); });
+lb.addEventListener("click", e => { if (e.target === lb) closeLightbox(); });
+
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape")     closeLightbox();
+  if (e.key === "ArrowLeft")  step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+
+/* swipe on touch screens — bound to the picture area only, so scrolling the
+   description and using the video controls still work normally */
+let touchX = null, touchY = null;
+lbStage.addEventListener("touchstart", e => {
+  if (e.touches.length !== 1 || e.target.tagName === "VIDEO") { touchX = null; return; }
+  touchX = e.touches[0].clientX;
+  touchY = e.touches[0].clientY;
+}, { passive: true });
+lbStage.addEventListener("touchend", e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  // must be a clearly sideways flick, not a vertical drag
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+  touchX = null;
+}, { passive: true });
+</script>
+</body>
+</html>
