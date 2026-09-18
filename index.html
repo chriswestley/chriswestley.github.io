@@ -320,20 +320,13 @@
     header .tagline { margin-top: 12px; font-size: 12px; }
     header .work { margin-top: 20px; font-size: 12px; line-height: 1.7; }
 
-    /* two across reads better than one giant tile per screen… */
+    /* Two across, every tile the same size — same rhythm as the desktop
+       grid, just narrower. Clips are sized like the photos, not wider. */
     .grid {
       padding: 38px 18px 28px;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
-    /* …except the clips, which get a full-width row of their own */
-    .tile--video { grid-column: 1 / -1; }
-
-    /* Full-width clips can leave a tile stranded on its own with a gap
-       beside it. mobileOrder re-sequences the grid on phones only, so
-       every pair is filled. The desktop order is untouched. */
-    .tile { order: var(--m-order, 0); }
-    .tile--video .label { font-size: 12px; padding: 13px 14px; }
 
     footer { padding: 22px 18px 40px; font-size: 11px; }
 
@@ -573,7 +566,6 @@ const PROJECTS = [
   },
   {
     title: "Military Bag - Giaco Mino",
-    mobileOrder: 10,
     description: "Giaco Mino is my own brand.\n\nMade from a repurposed Danish military duffle bag.\n\nThis bag was designed with function in mind — to carry the everyday tools of a creative. The size is large, with a spacious main compartment that allows room for garments, notebooks, and equipment, plus one outer side pocket for quick access to smaller items.\n\nThe canvas is dense and hard-wearing, softened by decades of use, giving the bag character while still holding its structure. Original details from the duffle bag are preserved where possible. Construction is kept simple and durable, focusing on usability and capacity.\n\n1 of 1.",
     folder: "MILITARY BAG FOR GIACO MINO",
     coverVideo: "ASSETS/military-bag-loop.mp4",
@@ -585,7 +577,6 @@ const PROJECTS = [
   },
   {
     title: "Zanjani",
-    mobileOrder: 11,
     description: "Cover artwork and shoot for Aslan Zanjani's single “Medicin” — black-and-white portraits cut into a three-frame sleeve.",
     folder: "ZANJANI SHOOT",
     cover: "THUMBS/zanjani.jpg",
@@ -598,7 +589,6 @@ const PROJECTS = [
   },
   {
     title: "1 of 1 Shorts for Maurice Bizi",
-    mobileOrder: 12,
     description: "A one-off pair of long-line shorts made for Maurice Bizi, cut from a washed grey & navy brushstroke camo with the House Painting Service crosshair motifs screen printed across the leg. Designed by me. Made for MAURICE BIZI.",
     folder: "1 of 1 SHORTS FOR MAURICE BIZI ",
     cover: "THUMBS/maurice-bizi.jpg",
@@ -609,12 +599,22 @@ const PROJECTS = [
   },
   {
     title: "1 of 1 Chore Jacket For House Painting Service",
-    mobileOrder: 9,
     description: "A chore jacket made for a house painting service — built to be worn while working. The cut is long and loose, with a hood, a waist belt, and room to move and layer underneath.\n\nThe camo panels on the sleeves and hem are leftover fabric from a sample, used here so nothing goes to waste — giving the jacket its own character. Construction is kept simple and durable, focusing on usability and wear.",
     folder: "1 of 1 Chore Jacket For House Painting Service",
     cover: "THUMBS/chore-jacket.jpg",
     images: [
       "1of1 Jacket.jpg"
+    ]
+  },
+  {
+    title: "Parachute Sweatpants",
+    description: "Wide-leg parachute sweatpants in heather grey brushed fleece, with the House Painting Service logo embroidered tonally on the leg. Shot on Oli with the Service long sleeve. Designed by me. Made for House Painting Service.",
+    folder: "Parachute Sweatpants",
+    cover: "THUMBS/parachute-sweatpants.jpg",
+    images: [
+      "🪂OLI WEARING OUR NEW HL PARACHUTE SWEATPANTS WITH OUR BL LONG SLEEVE, BACK IN ALL SIZES.WHOLE L (1).jpg",
+      "🪂OLI WEARING OUR NEW HL PARACHUTE SWEATPANTS WITH OUR BL LONG SLEEVE, BACK IN ALL SIZES.WHOLE L.jpg",
+      "🪂OLI WEARING OUR NEW HL PARACHUTE SWEATPANTS WITH OUR BL LONG SLEEVE, BACK IN ALL SIZES.WHOLE L (2).jpg"
     ]
   }
 ];
@@ -666,7 +666,6 @@ PROJECTS.forEach((p, pi) => {
   btn.innerHTML = '<div class="frame">' + media +
                   '<span class="label">' + p.title + '</span></div>';
   if (p.coverZoom) btn.style.setProperty("--zoom", p.coverZoom);
-  if (p.mobileOrder) btn.style.setProperty("--m-order", p.mobileOrder);
   btn.addEventListener("click", () => openLightbox(pi, 0));
   grid.appendChild(btn);
 });
